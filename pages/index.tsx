@@ -16,7 +16,7 @@ export async function getServerSideProps(context: any) {
 }
 const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
   const [session] = useSession();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const submitData = (event: any) => {
@@ -24,12 +24,13 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
     event.stopPropagation();
 
     signIn("credentials", {
-      username,
+      email,
       password,
+      callbackUrl: `${window.location.origin}/cal/bookings`,
     });
 
     if (session) {
-      Router.push("/");
+      Router.push("/cal/bookings");
     }
   };
   return (
@@ -39,20 +40,20 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div className="flex h-screen bg-gray-bg1">
-        <div className="w-full max-w-5xl px-32 py-32 m-auto bg-cover border rounded-lg bg-notes">
-          <h1 className="text-2xl font-bold text-center text-primary">
+        <div className="w-10/12 max-w-xl px-4 py-4 m-auto bg-cover border rounded-lg bg-notes">
+          <h1 className="text-lg font-bold text-center text-primary">
             SimbaCal.com
           </h1>
           <br />
-          <h1 className="text-4xl font-bold text-center text-primary">
+          <h1 className="text-2xl font-bold text-center text-primary">
             Sign in to your Account
           </h1>
           <br />
-          <div className="w-full max-w-xl px-12 py-12 m-auto bg-white border rounded-lg">
+          <div className="w-9/12 max-w-lg px-8 py-4 m-auto bg-white border rounded-lg">
             <form onSubmit={submitData}>
               <div>
-                <label htmlFor="username" className="font-bold">
-                  Email Address
+                <label htmlFor="email" className="text-xs font-bold">
+                  email
                 </label>
                 <input
                   name="csrfToken"
@@ -60,25 +61,25 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
                   defaultValue={csrfToken}
                 />
                 <input
-                  type="username"
-                  className={`w-full p-3.5 text-primary border outline-none text-sm transition duration-150 ease-in-out mb-4`}
-                  id="username"
-                  onChange={(e) => setUsername(e.target.value)}
-                  value={username}
+                  type="email"
+                  className={`w-full p-2 text-primary border outline-none text-sm transition duration-150 ease-in-out mb-4`}
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
                   required
                 />
               </div>
               <br />
               <div>
                 <div className="flex justify-between">
-                  <label htmlFor="password" className="font-bold">
+                  <label htmlFor="password" className="text-xs font-bold">
                     Password
                   </label>
-                  <span className="font-bold">Forgot?</span>
+                  <span className="text-xs font-bold">Forgot?</span>
                 </div>
                 <input
                   type="password"
-                  className={`w-full p-3.5 text-primary border outline-none text-sm transition duration-150 ease-in-out mb-4`}
+                  className={`w-full p-2 text-primary border outline-none text-sm transition duration-150 ease-in-out mb-4`}
                   id="password"
                   placeholder="******"
                   onChange={(e) => setPassword(e.target.value)}
@@ -90,13 +91,14 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
               <div>
                 <button
                   type="submit"
-                  className="w-full px-8 py-3.5 text-lg font-bold text-white bg-black border rounded border-green focus:outline-none hover:bg-white hover:text-black"
+                  className="w-full px-4 py-3 text-xs font-bold text-white bg-black border rounded border-green focus:outline-none hover:bg-white hover:text-black"
                 >
                   Sign in
                 </button>
               </div>
+              <br />
               <div className="flex justify-center">
-                <span className="text-center">
+                <span className="text-xs text-center">
                   Do not have an account?
                   <Link href={"/cal/signup"}>
                     <a className="font-bold">&nbsp; Create An Account</a>
