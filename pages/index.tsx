@@ -16,7 +16,7 @@ export async function getServerSideProps(context: any) {
 }
 const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
   const [session] = useSession();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const submitData = (event: any) => {
@@ -24,12 +24,13 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
     event.stopPropagation();
 
     signIn("credentials", {
-      username,
+      email,
       password,
+      callbackUrl: `${window.location.origin}/cal/bookings`,
     });
 
     if (session) {
-      Router.push("/");
+      Router.push("/cal/bookings");
     }
   };
   return (
@@ -51,8 +52,8 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
           <div className="w-9/12 max-w-lg px-8 py-4 m-auto bg-white border rounded-lg">
             <form onSubmit={submitData}>
               <div>
-                <label htmlFor="username" className="text-xs font-bold">
-                  Username
+                <label htmlFor="email" className="text-xs font-bold">
+                  email
                 </label>
                 <input
                   name="csrfToken"
@@ -60,11 +61,11 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
                   defaultValue={csrfToken}
                 />
                 <input
-                  type="username"
+                  type="email"
                   className={`w-full p-2 text-primary border outline-none text-sm transition duration-150 ease-in-out mb-4`}
-                  id="username"
-                  onChange={(e) => setUsername(e.target.value)}
-                  value={username}
+                  id="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
                   required
                 />
               </div>

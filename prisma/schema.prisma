@@ -16,8 +16,8 @@ model User {
   email     String?  @unique
   password  String?  @unique
   username  String?  @unique
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  createdAt DateTime? @default(now()) @map(name: "created_at")
+  updatedAt DateTime? @updatedAt @map(name: "updated_at")
   booking   Booking[]
   @@map(name: "users")
 }
@@ -25,11 +25,17 @@ model User {
 model Booking {
   id        Int      @id @default(autoincrement())
   title     String?
-  startTime DateTime @map(name: "start_time")
-  endTime   DateTime @map(name: "end_time")
-  duration  DateTime
+  startTime DateTime?
+  endTime   DateTime?
+  duration  DateTime?
   owner     User?    @relation(fields: [userId], references: [id])
   userId    Int?
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  status    Status   @default(UPCOMING)
+  createdAt DateTime? @default(now()) @map(name: "created_at")
+  updatedAt DateTime? @updatedAt @map(name: "updated_at")
+}
+
+enum Status {
+  UPCOMING
+  CANCELLED
 }
