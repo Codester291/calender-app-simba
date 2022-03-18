@@ -36,6 +36,9 @@ export const getServerSideProps = async (context: any) => {
     where: {
       userId: user?.id,
     },
+    include: {
+      owner: true,
+    },
   });
 
   return {
@@ -128,29 +131,39 @@ const BookingPage = ({
                   className="flex justify-between w-full p-8 mb-6 rounded-lg shadow-md"
                   key={booking?.id}
                 >
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold">
-                      {moment(booking.createdAt).format("ddd, MMM yyyy")}
-                    </span>
-                    <span className="text-xs font-semibold opacity-20">
-                      {moment(booking.startTime).format("hh:mma")} -{" "}
-                      {moment(booking.endTime).format("hh:mma")}
-                    </span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-2xl font-bold">{booking?.title}</span>
-                  </div>
                   <div className="flex flex-row">
+                    <div className="flex flex-col px-5">
+                      <span className="text-xs font-bold">
+                        {moment(booking.createdAt).format("ddd, MMM yyyy")}
+                      </span>
+                      <span className="text-xs font-semibold opacity-20">
+                        {moment(booking.startTime).format("hh:mma")} -{" "}
+                        {moment(booking.endTime).format("hh:mma")}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold">
+                        {booking?.title}
+                      </span>
+                      <span className="text-xs font-semibold opacity-20">
+                        {"Description lorem ipsum"}
+                      </span>
+                      <span className="text-xs font-semibold opacity-20">
+                        {booking?.owner?.email}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-row flex-grow-0">
                     <button
                       type="submit"
-                      className="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-gray-500 hover:text-white"
+                      className="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-red-500 hover:text-white"
                     >
                       <XCircleIcon className="w-5 h-5 mr-3 text-black" />
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="inline-flex items-center px-4 py-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-gray-500 hover:text-white"
+                      className="inline-flex items-center px-4 py-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-yellow-500 hover:text-white"
                     >
                       <ClockIcon className="w-5 h-5 mr-3 text-black" />
                       Reschedule
