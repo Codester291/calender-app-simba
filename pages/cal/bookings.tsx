@@ -3,6 +3,7 @@
 import React from "react";
 import "tailwindcss/tailwind.css";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { TabGroup } from "@statikly/funk";
 import { getSession, signOut } from "next-auth/client";
 import { PrismaClient } from "@prisma/client";
@@ -34,7 +35,7 @@ export const getServerSideProps = async (context: any) => {
 
   const bookings = await prisma.booking.findMany({
     where: {
-      userId: user?.id,
+      AND: [{ userId: user?.id }, { status: "UPCOMING" }],
     },
     include: {
       owner: true,
@@ -55,6 +56,10 @@ const BookingPage = ({
   bookings: any;
   user: any;
 }) => {
+  const router = useRouter();
+  const goToBookingsPage = () => {
+    router.push("/cal/create");
+  };
   const logOut = () => {
     signOut({
       callbackUrl: `${window.location.origin}/`,
@@ -72,7 +77,7 @@ const BookingPage = ({
 
           <div className="flex flex-row">
             <button
-              type="submit"
+              onClick={goToBookingsPage}
               className="px-2 py-2 text-xs font-semibold text-white bg-black border rounded border-green focus:outline-none hover:bg-white hover:text-black"
             >
               Create An Event
@@ -134,7 +139,7 @@ const BookingPage = ({
                   <div className="flex flex-row">
                     <div className="flex flex-col px-5">
                       <span className="text-xs font-bold">
-                        {moment(booking.createdAt).format("ddd, MMM yyyy")}
+                        {moment(booking.createdAt).format("ddd, d MMM")}
                       </span>
                       <span className="text-xs font-semibold opacity-20">
                         {moment(booking.startTime).format("hh:mma")} -{" "}
@@ -146,14 +151,14 @@ const BookingPage = ({
                         {booking?.title}
                       </span>
                       <span className="text-xs font-semibold opacity-20">
-                        {"Description lorem ipsum"}
+                        {booking?.description}
                       </span>
                       <span className="text-xs font-semibold opacity-20">
                         {booking?.owner?.email}
                       </span>
                     </div>
                   </div>
-                  <div className="flex flex-row flex-grow-0">
+                  <div className="flex flex-row">
                     <button
                       type="submit"
                       className="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-red-500 hover:text-white"
