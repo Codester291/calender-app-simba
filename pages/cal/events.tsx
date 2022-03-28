@@ -9,6 +9,7 @@ import { getSession, signOut } from "next-auth/client";
 import { PrismaClient } from "@prisma/client";
 import { ClockIcon, XCircleIcon } from "@heroicons/react/outline";
 import moment from "moment";
+import Link from "next/link";
 
 export const getServerSideProps = async (context: any) => {
   const prisma = new PrismaClient();
@@ -33,7 +34,7 @@ export const getServerSideProps = async (context: any) => {
   });
   console.log(`User: ${user?.email}`);
 
-  const bookings = await prisma.booking.findMany({
+  const events = await prisma.event.findMany({
     where: {
       AND: [{ userId: user?.id }, { status: "UPCOMING" }],
     },
@@ -43,7 +44,7 @@ export const getServerSideProps = async (context: any) => {
   });
 
   return {
-    props: { session, bookings: JSON.parse(JSON.stringify(bookings)), user },
+    props: { session, bookings: JSON.parse(JSON.stringify(events)), user },
   };
 };
 
@@ -68,7 +69,7 @@ const BookingPage = ({
   return (
     <div>
       <Head>
-        <title>Booking</title>
+        <title>Event</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <div className="flex-col h-screen p-24 bg-gray-bg1">
@@ -159,6 +160,15 @@ const BookingPage = ({
                     </div>
                   </div>
                   <div className="flex flex-row">
+                    <Link href={`/cal/event/details/${booking.id}`}>
+                      <button
+                        type="submit"
+                        className="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-red-500 hover:text-white"
+                      >
+                        <XCircleIcon className="w-5 h-5 mr-3 text-black" />
+                        Event Details
+                      </button>
+                    </Link>
                     <button
                       type="submit"
                       className="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-red-500 hover:text-white"

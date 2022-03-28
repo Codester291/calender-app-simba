@@ -9,25 +9,35 @@ const Book = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [title, setTitle] = useState("");
+  const [eventType, setEventType] = useState("");
   const [description, setDescription] = useState("");
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+
   const router = useRouter();
 
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
-      const body = { email, name, startTime, endTime, title, description };
-      await axios.post("/api/book", body);
-
-      await router.push("/cal/bookings");
+      const body = {
+        email,
+        name,
+        startTime,
+        endTime,
+        title,
+        eventType,
+        description,
+      };
+      const res = await axios.post("/api/event", body);
+      console.log(`Response: ${JSON.stringify(res.data)}`);
+      await router.push("/cal/events");
     } catch (error) {
       console.error(error);
     }
   };
 
   const routeToBookingsPage = () => {
-    router.push("/cal/bookings");
+    router.push("/cal/events");
   };
   return (
     <div>
@@ -43,13 +53,13 @@ const Book = () => {
           onClick={routeToBookingsPage}
           className="inline-flex items-center px-4 py-2 mr-2 text-xs font-semibold text-black bg-white border rounded border-green focus:outline-none hover:bg-red-500 hover:text-white"
         >
-          Back To Bookings
+          Back To Events
           <XCircleIcon className="w-5 h-5 ml-3 text-black" />
         </button>
       </div>
-      <div className="flex justify-center h-screen p-12 bg-gray-bg1">
+      <div className="flex justify-center h-screen p-8 bg-gray-bg1">
         <form
-          className="max-w-xl p-8 rounded-lg shadow-md h-4/6"
+          className="max-w-xl p-4 rounded-lg shadow-md h-5/6"
           onSubmit={submitData}
         >
           <div className="flex flex-wrap mb-3 -mx-3">
@@ -106,6 +116,30 @@ const Book = () => {
                 value={title}
                 required={true}
               />
+              {title === "" && (
+                <p className="text-xs italic text-red-600 animate-pulse">
+                  title cannot be empty
+                </p>
+              )}
+            </div>
+            <div className="w-full px-3 mb-3 md:w-12/12 md:mb-0">
+              <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
+                Event Type
+              </label>
+              <input
+                className="block w-full px-4 py-3 mb-3 text-xs font-bold leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                id="grid-password"
+                type="text"
+                onChange={(e) => setEventType(e.target.value)}
+                placeholder="Event Type"
+                value={eventType}
+                required={true}
+              />
+              {eventType === "" && (
+                <p className="text-xs italic text-red-600 animate-pulse">
+                  Event Type cannot be empty
+                </p>
+              )}
             </div>
             <div className="w-full px-3 mb-3 md:w-12/12 md:mb-0">
               <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
@@ -173,130 +207,3 @@ const Book = () => {
 };
 
 export default Book;
-/**
- * <div className="flex flex-wrap mb-6 -mx-3">
-            <div className="w-full px-3">
-              <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-                Name
-              </label>
-              <input
-                className="block w-full px-4 py-3 mb-3 text-xs font-bold leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-password"
-                type="text"
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
-                value={email}
-                required={true}
-              />
-              {email === "" && (
-                <p className="text-xs italic text-red-600 animate-pulse">
-                  email cannot be empty
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-wrap mb-6 -mx-3">
-            <div className="w-full px-3">
-              <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-                email
-              </label>
-              <input
-                className="block w-full px-4 py-3 mb-3 text-xs font-bold leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-password"
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="xyz@gmail.com"
-                value={email}
-                required={true}
-              />
-              {email === "" && (
-                <p className="text-xs italic text-red-600 animate-pulse">
-                  email cannot be empty
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-wrap mb-6 -mx-3">
-            <div className="w-full px-3">
-              <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-                Title
-              </label>
-              <input
-                className="block w-full px-4 py-3 mb-3 text-xs font-bold leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-password"
-                type="text"
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Your title here"
-                value={title}
-                required={true}
-              />
-              {email === "" && (
-                <p className="text-xs italic text-red-600 animate-pulse">
-                  title cannot be empty
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-wrap mb-6 -mx-3">
-            <div className="w-full px-3 mb-6 md:w-1/3 md:mb-0">
-              <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-                Description
-              </label>
-              <input
-                className="block w-full px-4 py-3 mb-3 text-xs font-bold leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                id="grid-password"
-                type="text"
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Your Description here"
-                value={description}
-                required={true}
-              />
-              {description === "" && (
-                <p className="text-xs italic text-red-600 animate-pulse">
-                  description cannot be empty
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex flex-wrap mb-2 -mx-3">
-            <div className="w-full px-3 mb-6 md:w-1/3 md:mb-0">
-              <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-                Start Date
-              </label>
-              <div className="relative">
-                <input
-                  type="date"
-                  className="block w-full px-8 py-3 pr-8 text-xs font-bold leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                  placeholder="Select date"
-                  value={startTime.toLocaleString()}
-                  onChange={(e) => setStartTime(new Date())}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="w-full px-3 mb-6 md:w-1/3 md:mb-0">
-            <label className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase">
-              End Date
-            </label>
-            <div className="relative">
-              <input
-                type="date"
-                className="block w-full px-8 py-3 pr-8 text-xs font-bold leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
-                placeholder="Select date"
-                value={endTime.toLocaleString()}
-                onChange={(e) => setEndTime(new Date())}
-              />
-            </div>
-          </div>
-          <div className="w-full px-3">
-            <br />
-            <br />
-            <button
-              className="block w-full px-4 py-3 mb-3 text-xs font-bold text-white uppercase bg-indigo-600 border rounded outline-none"
-              id="grid-password"
-              type="submit"
-            >
-              Transfer
-            </button>
-          </div>
- */
