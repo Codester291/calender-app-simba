@@ -26,11 +26,11 @@ const LandingPage = ({ csrfToken }: { csrfToken: any }) => {
     signIn("credentials", {
       email,
       password,
-      callbackUrl: `${window.location.origin}/cal/bookings`,
+      callbackUrl: `${window.location.origin}/cal/events`,
     });
 
     if (session) {
-      Router.push("/cal/bookings");
+      Router.push("/cal/events");
     }
   };
   return (
